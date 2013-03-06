@@ -10,11 +10,10 @@
 
 #define ENV_BYTES "PROCESSED_BYTES"
 
-static int interval = 5;
+static unsigned int interval = 5;
 
 unsigned long long counter = 0;
 char running = 1;
-pthread_mutex_t thread_mutex;
 
 static const struct option g_LongOpts[] = {
   { "interval", required_argument, 0, 'i' },
@@ -49,7 +48,7 @@ void* thread(void* args) {
 static void usage() {
   printf("USAGE: redigo [options]\n");
   printf("Options are:\n");
-  printf(" -i, --interval [seconds]\tAmount of seconds between the hooks.\n");
+  printf(" -i, --interval [seconds]\tAmount of seconds between the hooks. Defaults to 5.\n");
   printf(" -H, --hook [executable]\tProgram to execute to report our progress.\n");
   printf(" -h, --help\t\t\tShow this help page.\n");
 }
@@ -79,7 +78,6 @@ int main(int argc, char** argv) {
   }
   unsetenv("DONE");
   int c;
-  pthread_mutex_init(&thread_mutex, NULL);
   pthread_t thread_t;
   pthread_create(&thread_t, NULL, thread, NULL);
   while ((c = getchar()) != EOF) {
