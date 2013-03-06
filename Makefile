@@ -1,5 +1,5 @@
-CFLAGS := $(CFLAGS) -Wall -O2 -mtune=native -g
-INC    := -I. $(INC)
+CFLAGS := $(CFLAGS) -Wall -O2 -mtune=native
+INC    := $(INC) -I.
 LFLAGS := -lpthread
 DEFINES:= $(DEFINES)
 CC     := gcc
@@ -11,7 +11,7 @@ DEPS   := build/main.o build/hook.o
 all: build $(DEPS) link
 
 dev: clean
-	DEFINES="-DDEV" $(MAKE)
+	DEFINES="-DDEV" CFLAGS="-g" $(MAKE)
 
 build:
 	-mkdir build bin
@@ -20,7 +20,7 @@ build:
 	$(CC) $(CFLAGS) $(DEFINES) $(INC) -c -o $@ $(patsubst build/%o,%c,$@)
 
 link: $(DEPS)
-	$(CC) $(CFLAGS) $(DEFINES) $(INC) $(LFLAGS) -o bin/$(BINARY) $(DEPS)
+	$(CC) $(CFLAGS) $(DEFINES) $(INC) -o bin/$(BINARY) $(DEPS) $(LFLAGS)
 
 clean:
 	rm -fv $(DEPS) bin/$(BINARY)
