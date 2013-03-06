@@ -4,7 +4,7 @@ LFLAGS := -lpthread
 DEFINES:= $(DEFINES)
 CC     := gcc
 BINARY := redigo
-DEPS   := build/main.o
+DEPS   := build/main.o build/hook.o
 
 .PHONY: all clean dev test
 
