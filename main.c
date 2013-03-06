@@ -35,9 +35,13 @@ void publishProgress(unsigned long long count) {
 }
 
 void* thread(void* args) {
+  unsigned long long tmpCount = counter;
   while (running) {
     sleep(interval);
-    publishProgress(counter);
+    if (tmpCount != counter) {
+      tmpCount = counter;
+      publishProgress(tmpCount);
+    }
   }
   return NULL;
 }
