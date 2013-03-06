@@ -1,6 +1,8 @@
 Redigo
 ======
 
+[![Build Status](https://travis-ci.org/schoentoon/redigo.png)](https://travis-ci.org/schoentoon/redigo)
+
 Simple application that allows you to execute hooks based upon data piped to it. The options to this program are fairly simple.
 -i, --interval allows you to adjust the time between the hooks.
 -H, --hook allows you to specify a hook to execute, you can use multiple hooks.
