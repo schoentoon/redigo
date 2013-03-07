@@ -51,7 +51,7 @@ static void usage() {
   printf("Options are:\n");
   printf(" -i, --interval [seconds]\tAmount of seconds between the hooks. Defaults to 5.\n");
   printf(" -H, --hook [executable]\tProgram to execute to report our progress.\n");
-  printf(" -f, --force\t\tForce execution without hooks.\n");
+  printf(" -f, --force\t\t\tForce execution without hooks.\n");
   printf(" -h, --help\t\t\tShow this help page.\n");
 }
 
