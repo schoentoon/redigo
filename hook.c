@@ -26,7 +26,9 @@ void execute_hooks()
     if (fork() == 0) {
       struct hook* node = hooks;
       while (node) {
-        system(node->executable);
+        int output = system(node->executable);
+        if (output != 0)
+          fprintf(stderr, "Hook: %s exited with non-zero status %d", node->executable, output);
         node = node->next;
       }
       exit(0);
