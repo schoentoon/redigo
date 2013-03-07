@@ -33,3 +33,8 @@ void execute_hooks()
     }
   }
 }
+
+int has_hooks()
+{
+  return (hooks ? 1 : 0);
+}

@@ -5,6 +5,7 @@ Redigo
 
 Simple application that allows you to execute hooks based upon data piped to it. The options to this program are fairly simple.
 -i, --interval allows you to adjust the time between the hooks.
+-f, --force allows you to run without any hooks, I don't see why you would want this though.
 -H, --hook allows you to specify a hook to execute, you can use multiple hooks.
 
 This program can have quite some uses, you could use it to report the progress of some long running progress to a database/web application by just putting it in the middle of it. Think about something like the following.

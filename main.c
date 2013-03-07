@@ -19,12 +19,13 @@ static const struct option g_LongOpts[] = {
   { "interval", required_argument, 0, 'i' },
   { "help",     no_argument,       0, 'h' },
   { "hook",     required_argument, 0, 'H' },
+  { "force",    no_argument,       0, 'f' },
   { 0, 0, 0, 0 }
 };
 
 void publishProgress(unsigned long long count) {
-  char buffer[50];
-  if (sprintf (buffer, "%lld", count)) {
+  char buffer[sizeof(count)];
+  if (sprintf(buffer, "%lld", count)) {
     setenv(ENV_BYTES, buffer, 1);
 #ifdef DEV
     fprintf(stderr, "So far I got %s bytes.\n", buffer);
@@ -50,13 +51,15 @@ static void usage() {
   printf("Options are:\n");
   printf(" -i, --interval [seconds]\tAmount of seconds between the hooks. Defaults to 5.\n");
   printf(" -H, --hook [executable]\tProgram to execute to report our progress.\n");
+  printf(" -f, --force\t\tForce execution without hooks.\n");
   printf(" -h, --help\t\t\tShow this help page.\n");
 }
 
 int main(int argc, char** argv) {
   int iArg, iOptIndex, tmp = -1;
+  int force = 0;
   struct hook* hook;
-  while ((iArg = getopt_long(argc, argv, "i:hH:", g_LongOpts, &iOptIndex)) != -1) {
+  while ((iArg = getopt_long(argc, argv, "fhi:H:", g_LongOpts, &iOptIndex)) != -1) {
     switch (iArg) {
       case 'H':
         hook = new_hook();
@@ -70,11 +73,19 @@ int main(int argc, char** argv) {
         }
         interval = tmp;
         break;
+      case 'f':
+        force = 1;
+        break;
       default:
       case 'h':
         usage();
         return 0;
     }
+  }
+  if (!has_hooks()) {
+    fprintf(stderr, "You didn't specifiy any hooks :/\n");
+    if (!force)
+      return 1;
   }
   unsetenv("DONE");
   int c;
@@ -85,7 +96,8 @@ int main(int argc, char** argv) {
     counter++;
   }
   setenv("DONE","true",1);
-  publishProgress(counter);
   running = 0;
+  publishProgress(counter);
+  unsetenv("DONE");
   return 0;
 }
