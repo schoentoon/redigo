@@ -1,4 +1,4 @@
-CFLAGS := $(CFLAGS) -Wall -O2 -mtune=native
+CFLAGS := $(CFLAGS) -Wall -Wno-unused-variable -O2 -mtune=native
 INC    := $(INC) -I.
 LFLAGS := -lpthread
 DEFINES:= $(DEFINES)
