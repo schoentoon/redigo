@@ -1,4 +1,5 @@
 #include "hook.h"
+#include "options.h"
 
 #include <stdio.h>
 #include <pthread.h>
@@ -10,18 +11,12 @@
 
 #define ENV_BYTES "PROCESSED_BYTES"
 
-static unsigned int interval = 5;
-
 unsigned long long counter = 0;
 char running = 1;
 
-static const struct option g_LongOpts[] = {
-  { "interval", required_argument, 0, 'i' },
-  { "help",     no_argument,       0, 'h' },
-  { "hook",     required_argument, 0, 'H' },
-  { "force",    no_argument,       0, 'f' },
-  { 0, 0, 0, 0 }
-};
+/* Define the variables from options.h */
+static unsigned int interval = 5;
+static char quiet = 0;
 
 void publishProgress(unsigned long long count) {
   char buffer[sizeof(count)];
@@ -52,6 +47,7 @@ static void usage() {
   printf(" -i, --interval [seconds]\tAmount of seconds between the hooks. Defaults to 5.\n");
   printf(" -H, --hook [executable]\tProgram to execute to report our progress.\n");
   printf(" -f, --force\t\t\tForce execution without hooks.\n");
+  printf(" -q, --quiet\t\t\tDon't output anything to stderr.\n");
   printf(" -h, --help\t\t\tShow this help page.\n");
 }
 
@@ -68,13 +64,17 @@ int main(int argc, char** argv) {
       case 'i':
         tmp = strtol(optarg, NULL, 10);
         if ((errno == ERANGE || (tmp == LONG_MAX || tmp == LONG_MIN)) || (errno != 0 && tmp == 0) || tmp < 0) {
-          fprintf(stderr, "--interval requires a positive amount of seconds.\n");
+          if (!quiet)
+            fprintf(stderr, "--interval requires a positive amount of seconds.\n");
           return 1;
         }
         interval = tmp;
         break;
       case 'f':
         force = 1;
+        break;
+      case 'q':
+        quiet = 1;
         break;
       default:
       case 'h':
@@ -83,7 +83,8 @@ int main(int argc, char** argv) {
     }
   }
   if (!has_hooks()) {
-    fprintf(stderr, "You didn't specifiy any hooks :/\n");
+    if (!quiet)
+      fprintf(stderr, "You didn't specifiy any hooks :/\n");
     if (!force)
       return 1;
   }
