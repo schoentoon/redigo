@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
   int iArg, iOptIndex, tmp = -1;
   int force = 0;
   struct hook* hook;
-  while ((iArg = getopt_long(argc, argv, "fhi:H:", g_LongOpts, &iOptIndex)) != -1) {
+  while ((iArg = getopt_long(argc, argv, "fqhi:H:", g_LongOpts, &iOptIndex)) != -1) {
     switch (iArg) {
       case 'H':
         hook = new_hook();
