@@ -52,7 +52,7 @@ static void usage() {
 }
 
 int main(int argc, char** argv) {
-  int iArg, iOptIndex, tmp = -1;
+  int iArg, iOptIndex = -1;
   int force = 0;
   struct hook* hook;
   while ((iArg = getopt_long(argc, argv, "fqhi:H:", g_LongOpts, &iOptIndex)) != -1) {
@@ -61,8 +61,8 @@ int main(int argc, char** argv) {
         hook = new_hook();
         hook->executable = optarg;
         break;
-      case 'i':
-        tmp = strtol(optarg, NULL, 10);
+      case 'i': {
+        long tmp = strtol(optarg, NULL, 10);
         if ((errno == ERANGE || (tmp == LONG_MAX || tmp == LONG_MIN)) || (errno != 0 && tmp == 0) || tmp < 0) {
           if (!quiet)
             fprintf(stderr, "--interval requires a positive amount of seconds.\n");
@@ -70,6 +70,7 @@ int main(int argc, char** argv) {
         }
         interval = tmp;
         break;
+      }
       case 'f':
         force = 1;
         break;
