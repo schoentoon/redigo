@@ -1,9 +1,10 @@
 #include "hook.h"
 #include "options.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <stdio.h>
+#include <sys/wait.h>
 
 struct hook *hooks = NULL;
 
@@ -25,15 +26,12 @@ struct hook* new_hook()
 void execute_hooks()
 {
   if (hooks) {
-    if (fork() == 0) {
-      struct hook* node = hooks;
-      while (node) {
-        int output = system(node->executable);
-        if (output != 0 && !quiet)
-          fprintf(stderr, "Hook: %s exited with non-zero status %d", node->executable, output);
-        node = node->next;
-      }
-      exit(0);
+    struct hook* node = hooks;
+    while (node) {
+      int output = system(node->executable);
+      if (output != 0 && !quiet)
+        fprintf(stderr, "Hook: %s exited with non-zero status %d", node->executable, output);
+      node = node->next;
     }
   }
 }
